@@ -4,48 +4,48 @@
 #include <locale.h>
 #include <wchar.h>
 
+#define MAX_NAME	50
+#define MAX_ADRESS	100
 
 typedef struct
 	{
-		char fio[50];
-		char adress [100];
+		wchar_t fio[MAX_NAME];
+		wchar_t adress[MAX_ADRESS];
 		int date_birth;
 		int month_birth;
 		int year_birth;
 		struct data *ptr_next;
 	} data;
 
-data *push (char fio[], char address[], int date_birth, int month_birth, int year_birth, data *head);
+data *push (wchar_t fio[], wchar_t address[], int date_birth, int month_birth, int year_birth, data *head);
 void print(data *head);
-
+void fill_str (wchar_t A[], int n);
 
 int main()
 {
 	setlocale(LC_ALL, "ru_RU.UTF-8"); 					// locale for Cyrillic
 	data *head = NULL;
-	char adress [100], fio[50];
+	wchar_t adress[MAX_ADRESS], fio[MAX_NAME];
 	int date_birth, month_birth, year_birth;
-	printf ("Фамилия Имя Отчество : ");
-	fgets(fio, 50, stdin);
-	fflush(stdin);
-	printf ("Адрес : ");
-	fgets(adress, 100, stdin);
-	fflush(stdin);
-	printf ("Число рождения : ");
-	scanf("%d", &date_birth);
-	printf ("Месяц роджения : ");
-	scanf("%d", &month_birth);
-	printf ("Год рождения : ");
-	scanf("%d", &year_birth);
+	wprintf (L"Фамилия Имя Отчество : ");
+	fill_str (fio, MAX_NAME);
+	wprintf (L"Адрес : ");
+	fill_str (adress, MAX_ADRESS);
+	wprintf (L"Число рождения : ");
+	wscanf(L"%2d", &date_birth);
+	wprintf (L"Месяц роджения : ");
+	wscanf(L"%2d", &month_birth);
+	wprintf (L"Год рождения : ");
+	wscanf(L"%4d", &year_birth);
 	head = push(fio, adress, date_birth, month_birth, year_birth, head);
 	print(head);
 }
 
-data *push(char fio[], char adress[], int date_birth, int month_birth, int year_birth, data *head)
+data *push(wchar_t fio[], wchar_t adress[], int date_birth, int month_birth, int year_birth, data *head)
 {
 	data *tmp = (data *)malloc(sizeof(data));
-	strlсpy (tmp->fio, fio, 50);
-	strlсpy (tmp->adress, adress, 100);
+	wcscpy (tmp->fio, fio);
+	wcscpy (tmp->adress, adress);
 	tmp->date_birth = date_birth;
 	tmp->month_birth = month_birth;
 	tmp->year_birth = year_birth;
@@ -55,12 +55,22 @@ data *push(char fio[], char adress[], int date_birth, int month_birth, int year_
 
 void print(data *head) {
     while (head) {
-		fputs(head->fio, stdout);
-		fputs(head->adress, stdout);
-		printf("%d ", head->date_birth);
-		printf("%d ", head->month_birth);
-		printf("%d ", head->year_birth);
+		wprintf(L"%S", head->fio);
+		wprintf(L"%S", head->adress);
+		wprintf(L"%d ", head->date_birth);
+		wprintf(L"%d ", head->month_birth);
+		wprintf(L"%d ", head->year_birth);
 		head = head->ptr_next;
 	}
     printf("\n");
+}
+
+void fill_str (wchar_t A[], int n) {
+    for (int i = 0; i < n ; i++) {
+    	wscanf (L"%lc", &A[i]);
+    	if (A[i] == '\n') {
+        	A[i] = '\0';
+        	break;
+    	}    
+    }
 }
